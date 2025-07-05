@@ -1,7 +1,0 @@
-{
-  "name": "haskell-workspace",
-  "scripts": {
-    "dev": "pnpx nodemon --exec 'ghc -o app -outputdir build app/Main.hs && app.exe' --ext .hs",
-    "build": "ghc -O2 -o app -outputdir build app/Main.hs"
-  }
-}

@@ -1,0 +1,5 @@
+say akari hi,welcometothegame
+say akari whatareyoufuckingdo?
+title hereisatitle
+pause 3
+say akari butimnotplayingthisgame

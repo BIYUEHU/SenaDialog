@@ -45,7 +45,7 @@ render state =
       putStr $ footer state
 
       hFlush stdout
-      pure $
+      return $
         state
           { displayLines = length $ lines str
           }
