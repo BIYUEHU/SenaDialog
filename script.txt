@@ -1,6 +1,7 @@
 say akari "hi there, how are you doing today?"
 say akari "i'm doing well, thanks for asking."
 akari:i'm playing a game called dice, it's a simple game where you roll a dice and if the number you get is 1, you lose. if the number is 2, you win. if the number is 3, you get a point. if the number is 4, you get two points. if the number is 5, you get three points. if the number is 6, you get four points."
-title hereisatitle
-pause 3
+title hereisatitl
+a:预案来如此
+a: 预案来如此@：:
 akari:i'm sorry, i don't understand what you mean by 'hereisatitle'.

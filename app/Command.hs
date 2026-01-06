@@ -1,4 +1,4 @@
-module Src.Command (AppCommand (..), parseAppCommand) where
+module Command (AppCommand (..), parseAppCommand) where
 
 data AppCommand = New | Save Int | Load Int | Quit | Home | List Int | Help | Invalid String | Back | Enter
 
@@ -20,6 +20,6 @@ parseAppCommand s = case words s of
   _ -> Invalid $ "unknown command: " ++ s
   where
     tryToPositiveInt :: String -> (Int -> AppCommand) -> AppCommand
-    tryToPositiveInt s f = case reads s of
-      [(n, "")] -> if n > 0 then f n else Invalid $ "argument must be positive: " ++ s
-      _ -> Invalid $ "invalid argument: " ++ s
+    tryToPositiveInt str f = case reads str of
+      [(n, "")] -> if n > 0 then f n else Invalid $ "argument must be positive: " ++ str
+      _ -> Invalid $ "invalid argument: " ++ str

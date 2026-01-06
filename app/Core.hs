@@ -1,16 +1,16 @@
-module Src.Core (Display (..), AppState (..), render, renderDisplay, getMainLoop) where
+module Core (Displaying (..), AppState (..), render, renderDisplay, getMainLoop) where
 
 import Control.Concurrent
 import Control.Monad
 import System.IO
 
-data Display = Static String | Dynamic ([String], Int, Int) deriving (Show)
+data Displaying = Static String | Dynamic ([String], Int, Int) deriving (Show)
 
 data AppState a = AppState
   { header :: String,
     footer :: String,
     handler :: Maybe (AppState a -> (AppState a -> IO ()) -> IO ()),
-    display :: Display,
+    display :: Displaying,
     displayLines :: Int,
     extra :: a
   }
@@ -24,8 +24,8 @@ moveCursorToLineStart = putStr "\ESC[1G"
 clearFromCursorToEnd :: IO ()
 clearFromCursorToEnd = putStr "\ESC[0J"
 
-clearCurrentLine :: IO ()
-clearCurrentLine = putStr "\ESC[2K"
+-- clearCurrentLine :: IO ()
+-- clearCurrentLine = putStr "\ESC[2K"
 
 findBackLineCount :: String -> Int
 findBackLineCount [] = 0
@@ -49,17 +49,17 @@ render state =
         state
           { displayLines = length $ lines str
           }
-    Dynamic (lines, delay, count) ->
+    Dynamic (strs, delay, count) ->
       let frame :: [String] -> AppState a -> IO (AppState a)
-          frame [] state = renderDisplay state $ if count == 0 then Static "..." else Dynamic (lines, delay, count - 1)
-          frame (line : rest) state = do
-            state <- renderDisplay state (Static line)
+          frame [] state' = renderDisplay state' $ if count == 0 then Static "..." else Dynamic (strs, delay, count - 1)
+          frame (line : rest) state' = do
+            state'' <- renderDisplay state' (Static line)
             threadDelay $ delay * 1000
-            frame rest state
-       in frame lines state
+            frame rest state''
+       in frame strs state
 
-renderDisplay :: AppState a -> Display -> IO (AppState a)
-renderDisplay state display = render $ state {display = display}
+renderDisplay :: AppState a -> Displaying -> IO (AppState a)
+renderDisplay state displaying = render $ state {display = displaying}
 
 getMainLoop :: (String -> AppState a -> IO (AppState a)) -> AppState a -> IO ()
 getMainLoop f =
@@ -68,11 +68,11 @@ getMainLoop f =
     next state = do
       input <- getLine
       moveCursorUp 1
-      state <- f input state
-      loop state
+      state' <- f input state
+      loop state'
 
     loop state = do
-      state <- render state
-      case handler state of
-        Just cb -> cb (state {handler = Nothing}) next
-        Nothing -> next state
+      state' <- render state
+      case handler state' of
+        Just cb -> cb (state' {handler = Nothing}) next
+        Nothing -> next state'
